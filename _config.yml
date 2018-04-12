@@ -17,7 +17,7 @@ theme_settings:
   # Header and footer text
   header_text: > #two or three lines to describe your site
      <p>Presenting<br>unrelenting<br>wheel-reinventing.</p>
-  header_text_feature_image: assets/img/pexels/napoleons_triumph.jpeg
+  header_text_feature_image: assets/img/pexels/napoleons_triumph.jpg
   footer_text: >
    Powered by <a href="https://jekyllrb.com/">Jekyll</a> with <a href="https://github.com/sylhare/Type-on-Strap">Type on Strap</a>. <br>
    Some icons made by <a href="http://www.freepik.com" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a>, used under a <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">Creative Commons license</a></div>

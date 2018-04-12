@@ -2,13 +2,12 @@
 layout: page
 title: About
 permalink: /about/
-feature-img: "assets/img/pexels/circuit.jpeg"
-tags: [About, Test]
+feature-img: "assets/img/pexels/wildfire.jpg"
+tags: [About]
 ---
 
-Type on Strap is based on Type Theme, a free and open-source theme for [Jekyll](http://jekyllrb.com/), licensed under the MIT License.
+I'm Logan, a statistician currently working for Medtronic. I got my masters in statistics from the University of Minnesota, and before that I spent some time in neurobiology research at Missouri State University.
 
-Head over to the [theme's documentation](https://github.io/sylhare/Type-on-Strap) for much more information about Type on Strap or to install this theme on your own Jekyll site.
-
-This file is an example of a page in Jekyll, that automatically shows up in the header navigation, you can delete or modify this file freely.
+Hopefully this site can keep some of my personal projects in order and serve as a kind of portfolio for potential employers.
  
+Massive thanks to user sylhare for providing the [Type-on-Strap theme](https://github.io/sylhare/Type-on-Strap). I wasn't excited about github pages default themes, then I found out you can call out any custom theme hosted on github in the `_config.yml` and it'll use that instead.

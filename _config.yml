@@ -16,7 +16,7 @@ theme_settings:
 
   # Header and footer text
   header_text: > #two or three lines to describe your site
-     <p>Presenting<br>unrelenting<br>wheel-reinventing.</p>
+     <p><br>Think of something good to write here.<br></p>
   header_text_feature_image: assets/img/pexels/napoleons_triumph.jpg
   footer_text: >
    Powered by <a href="https://jekyllrb.com/">Jekyll</a> with <a href="https://github.com/sylhare/Type-on-Strap">Type on Strap</a>. <br>

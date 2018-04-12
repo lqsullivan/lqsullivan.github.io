@@ -1,7 +1,7 @@
 # SITE CONFIGURATION
 baseurl: ""
 url: "https://lqsullivan.github.io"
-title: TTest # site's title
+title: Sully, my good name # site's title
 description: "A website with blog posts and pages" # used by search engines
 
 remote_theme: Sylhare/Type-on-Strap # Needed for githubpages
@@ -9,17 +9,18 @@ remote_theme: Sylhare/Type-on-Strap # Needed for githubpages
 # THEME-SPECIFIC CONFIGURATION
 theme_settings:
   # Meta
-  title: Test # blog's title
-  avatar: assets/img/triangle.svg
+  title: Sully, my good name # blog's title
+  avatar: assets/img/hex.svg
   favicon: assets/favicon.ico
   gravatar: # Email MD5 hash
 
   # Header and footer text
   header_text: > #two or three lines to describe your site
-     <p>Placeholder description of this site <br> to make people want to read it.</p>
+     <p>Presenting<br>unrelenting<br>wheel-reinventing.</p>
   header_text_feature_image: assets/img/pexels/nap_triumph.jpg
   footer_text: >
-   Powered by <a href="https://jekyllrb.com/">Jekyll</a> with <a href="https://github.com/sylhare/Type-on-Strap">Type on Strap</a>
+   Powered by <a href="https://jekyllrb.com/">Jekyll</a> with <a href="https://github.com/sylhare/Type-on-Strap">Type on Strap</a>. <br>
+   Some icons made by <a href="http://www.freepik.com" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a>, used under a <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">Creative Commons license</a></div>
 
   # Icons
   rss: #true  # Make sure you created a feed.xml with feed.xml layout

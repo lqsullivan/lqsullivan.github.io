@@ -250,3 +250,14 @@
 	</a>
 </li>
 {% endif %}
+
+{% if site.theme_settings.boardgamegeek %}
+<li>
+	<a href="https://www.boardgamegeek.com/user/{{ site.theme_settings.boardgamegeek }}" title="{{ site.theme_settings.str_follow_on }} Board Game Geek">
+		<span class="fa-stack fa-lg">
+            <i class="fa fa-circle fa-stack-2x"></i>
+            <i class="fa fa-boardgamegeek fa-stack-1x fa-inverse"></i>
+        </span>
+	</a>
+</li>
+{% endif %}

@@ -68,6 +68,11 @@ should play our card now.
 To make things simpler, I'm sometimes going to give the group of things
 we condition on a shorthand, *C*
 
+\begin{align}
+p(X\_i | Y) = 1 \\
+           &= \sum\_{i=1}^10 x^2
+\end{align}
+
 \begin{align\*}
      p(X\_{(i)} &lt; x | X\_{(1)},\\dots,X\_{(j-1)},X\_{n-k+1} = x\_{n-k+1},\\dots X\_n = x\_n)
   &= 1 - p(X\_{(i)} \\geq x | X\_{(1)},\\dots,X\_{(i-1)},X\_{n-k+1} = x\_{n-k+1},\\dots X\_n = x\_n) \\

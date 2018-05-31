@@ -70,11 +70,11 @@ we condition on a shorthand, *C*
 
 \begin{align\*}
      p(X\_{(i)} &lt; x | X\_{(1)},\\dots,X\_{(j-1)},X\_{n-k+1} = x\_{n-k+1},\\dots X\_n = x\_n)
-  &= 1 - p(X\_{(i)} \\geq x | X\_{(1)},\\dots,X\_{(i-1)},X\_{n-k+1} = x\_{n-k+1},\\dots X\_n = x\_n) \\\\
-  &= 1 - p(X\_1 \\geq x, X\_2 \\geq x, \\dots, X\_n\\geq x | C) \\\\
-  &= 1 - p(X\_1 \\geq x | C) \\cdot p(X\_2 \\geq x | X\_1 \\geq x, C) \\cdots p(X\_n \\geq x | X\_1 \\geq x, \\dots, X\_{n-1} \\geq x, C) \\\\
-  &= 1 - p(X\_1 \\geq x | C) \\cdot p(X\_2 \\geq x | X\_1 \\geq x, C) \\cdots p(X\_{n-k} \\geq x | X\_1 \\geq x, \\dots, X\_{n-k-1} \\geq x, C) \\\\
-  &= 1 - \\frac{100 - x - (k - 1)}{100 - X\_{(i-1)} - k} \\cdot \\frac{100 - x - (k - 1) - 1}{100 - X\_{(i)} - k - 1} \\cdots \\frac{100 - x - (k - 1) - (j-1)}{100 - X\_{(i)} - k - (j - 1)} \\cdots \\frac{100 - x - (k - 1) - (n - k - 1)}{100 - X\_{(i)} - k - (n - k - 1)} \\\\
+  &= 1 - p(X\_{(i)} \\geq x | X\_{(1)},\\dots,X\_{(i-1)},X\_{n-k+1} = x\_{n-k+1},\\dots X\_n = x\_n) \\
+  &= 1 - p(X\_1 \\geq x, X\_2 \\geq x, \\dots, X\_n\\geq x | C) \\
+  &= 1 - p(X\_1 \\geq x | C) \\cdot p(X\_2 \\geq x | X\_1 \\geq x, C) \\cdots p(X\_n \\geq x | X\_1 \\geq x, \\dots, X\_{n-1} \\geq x, C) \\
+  &= 1 - p(X\_1 \\geq x | C) \\cdot p(X\_2 \\geq x | X\_1 \\geq x, C) \\cdots p(X\_{n-k} \\geq x | X\_1 \\geq x, \\dots, X\_{n-k-1} \\geq x, C) \\
+  &= 1 - \\frac{100 - x - (k - 1)}{100 - X\_{(i-1)} - k} \\cdot \\frac{100 - x - (k - 1) - 1}{100 - X\_{(i)} - k - 1} \\cdots \\frac{100 - x - (k - 1) - (j-1)}{100 - X\_{(i)} - k - (j - 1)} \\cdots \\frac{100 - x - (k - 1) - (n - k - 1)}{100 - X\_{(i)} - k - (n - k - 1)} \\
   &= 1 - \\prod\_{j=0}^{n - k - 1} \\frac{100 - x - (k - 1) - j}{100 - X\_{(i)} - k - j}
 \end{align\*}
 

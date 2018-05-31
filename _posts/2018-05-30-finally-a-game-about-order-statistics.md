@@ -1,5 +1,14 @@
+---
+layout: post
+title: Finally, a game about order statistics
+tags: [board games, probability, order statistics]
+mathjax: true
+excerpt_separator: <!--more-->
+---
+
 The last couple months, I've seen buzz about a small, quick German game
-(if you're on the 'its a game' side of the argument). <more intro>
+(if you're on the 'its a game' side of the argument).
+<!--more-->
 
 The Mind is a co-operative card game where players attempt to lay down
 cards from their hidden hands in ascending order using no communication

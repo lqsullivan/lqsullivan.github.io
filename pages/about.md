@@ -8,7 +8,7 @@ tags: [About]
 
 I'm Logan. Right now I'm a statistician at Medtronic. I got my masters in statistics from the University of Minnesota, and before that I spent some time doing neurobiology research at Missouri State University. If you want to know more about my academic and profesional backgrounds, check out my Linkedin (see footer).
 
-In my spare time, I play ton of board games, read a bit, play clawhammer banjo, and work through a backlog of movies. If you're interested in what I'm into right now, try An Infamous Traffic/The Great Zimbabwe/1830, Void Star/The Crying of Lot 49, Rob Stenson/Rhiannon Giddens/Steve Martin, and My Dinner with Andre/M/Prisoners.
+In my spare time, I play ton of board games, read a bit, play clawhammer banjo, work through a backlog of movies, and try to document some of my other projects here.
 
 ## What's he doing here?
 

@@ -2,6 +2,7 @@
 layout: post
 title: Test Post
 tags: [Test, Another Test]
+mathjax: true
 excerpt_separator: <!--more-->
 ---
 
@@ -20,14 +21,7 @@ $$ \prod{j=0}^{n+1} \frac{n}{n+1} $$
 Test aligned math
 $$ 
 \begin{align}
-  \phantom{i + j + k}
-  &\begin{aligned}
-    \mathllap{a} &= b + c + d\\
-      &\qquad + e + f + g + x + y + z
-  \end{aligned}\\
-  &\begin{aligned}
-    \mathllap{i + j + k} &= l + m + n\\
-      &\qquad + o + p + q
-  \end{aligned}
+  a &= 1+2+3 \\
+    &= \sum_{i=1}^{4-x} i^n
 \end{align}
 $$

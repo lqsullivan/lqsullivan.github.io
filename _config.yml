@@ -16,7 +16,7 @@ theme_settings:
 
   # Header and footer text
   header_text: > #two or three lines to describe your site
-     <p>Here I write about<br>things I love that fill my time.<br>Make my interests yours.</p>
+     <p><br><br></p>
   header_text_feature_image: assets/img/pexels/napoleons_triumph.jpg
   footer_text: >
    Powered by <a href="https://jekyllrb.com/">Jekyll</a> with <a href="https://github.com/sylhare/Type-on-Strap">Type on Strap</a>. <br>
@@ -51,7 +51,7 @@ theme_settings:
   # Scripts / Features 
   google_analytics: # Tracking ID, e.g. "UA-000000-01"
   disqus_shortname:
-  katex: true # Enable if using math markup
+  katex: false # Enable if using math markup (off cause I'm trying mathjax)
   portfolio: true
   search: true
   tags: true

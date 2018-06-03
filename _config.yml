@@ -1,22 +1,22 @@
 # SITE CONFIGURATION
 baseurl: ""
 url: "https://lqsullivan.github.io"
-title: Sully, my good name # site's title
-description: "A website with blog posts and pages" # used by search engines
+title: Sully my good name # site's title
+description: "A blog in three acts" # used by search engines
 
 remote_theme: Sylhare/Type-on-Strap # Needed for githubpages
 
 # THEME-SPECIFIC CONFIGURATION
 theme_settings:
   # Meta
-  title: Sully, my good name # blog's title
+  title: Sully my good name # blog's title
   avatar: assets/img/hex.svg
   favicon: assets/favicon.ico
   gravatar: # Email MD5 hash
 
   # Header and footer text
   header_text: > #two or three lines to describe your site
-     <p><br>Think of something good to write here.<br></p>
+     <p>Here I write about<br>things I love that fill my time.<br>Make my interests yours.</p>
   header_text_feature_image: assets/img/pexels/napoleons_triumph.jpg
   footer_text: >
    Powered by <a href="https://jekyllrb.com/">Jekyll</a> with <a href="https://github.com/sylhare/Type-on-Strap">Type on Strap</a>. <br>
@@ -61,10 +61,10 @@ theme_settings:
   str_rss_follow: #"Follow RSS feed"
   str_email: "Email"
   str_next_post: "Give me another"
-  str_previous_post: "Repeat that"
-  str_next_page: "The next one"
-  str_previous_page: "The last one"
-  str_continue_reading: "Keep going"
+  str_previous_post: "Hang on, I wasn't done"
+  str_next_page: "page++"
+  str_previous_page: "page--"
+  str_continue_reading: "I like where this is headed"
   str_javascript_required_disqus: "Please enable JavaScript to view comments."
 
   # Colours, typography and padding

@@ -56,13 +56,22 @@ Line 4 could (should?) go directly to the summation, but writing it out helped k
 
 The insight here that kind of undercuts the 'it's tricky' claim in footnote 3 is that this (like so many probability problems) is just fancy counting and division. Think of it like calculating outs in poker. The order statistic $X_{(i)} \geq x$ when each card $X_i \geq x$. The probability card $X_i \geq x$ is the number of ways you could draw a card with value $\geq x$ divided by the number of possible draws. Then we use the information we condition on to figure out how many cards are left and how many $\geq x$. Remember that cards have to be played sequentially, so there are no possible draws left less than the previously revealed card (order statistic $X_{(i-1)}$, and there are some cards we're holding that are above our minimum, which further limits the outs.
 
-## Simulation
+## Confirmation by simulation
+
+Ok, not *confirming*, just making myself more confident. But that doesn't rhyme.
 
 We've got the explicit expression now. It's got a product, it doesn't depend on the values of any card but our minimum (the rest just change the count of remaining cards), and a few test cases pass sanity checks. But it's easy for mistakes and oversights to sneak in, so, when it's easy to simulate the result, I like to check it that way too.
 
 **insert simulation results**
 
+## Examples
 
-
-* Why is it so satasfying to complete a run of close values? Because you can see the cliff so obviously?
+## Future directions
+* Figure out the distribution of order statistics (maybe not much harder, since for discrete $p(X = x) = p(X \leq x) - p(X < x)$)
+* Make this a Shiny app so you can put this into practice at the table
+* Maybe there's a way to use this and the empirical win rates of teams to quantify the additional information players gain from the nonverbal communication?
+* Figure out why the game uses ninja stars
+* Write up my feelings on why its so satasfying to complete a run of close values. Because you can see the cliff so obviously?
 * Why ninja stars?
+
+### Footnotes

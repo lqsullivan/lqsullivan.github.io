@@ -140,8 +140,10 @@ We could calculate a minimum 'play threshold' that gives the group a certain pro
 
 ### Play difficulty
 
-What if we calculate the play probability for each player, then use how close they are to measure the difficulty of a play? Because of what I mentioned earlier about monotonicity, this will be a very similar measure to using the card values themselves. But, it's certainly a TTD[^4]. (Actual work coming soon)
+What if we calculate the play probability for each player, then use how close they are to measure the difficulty of a play? Because of what I mentioned earlier about monotonicity, this will be a very similar measure to using the card values themselves. But, it's certainly a TTD[^4] . (Actual work coming soon)
+
 [^4]: Thing To Do. One of my favorite TLAs[^5] thanks to Charlie Geyer
+
 [^5]: Three Letter Acronyms
 
 ## Future directions

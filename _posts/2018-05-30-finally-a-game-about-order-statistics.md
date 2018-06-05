@@ -140,13 +140,18 @@ We could calculate a minimum 'play threshold' that gives the group a certain pro
 
 ### Play difficulty
 
-What if we calculate the play probability for each player, then use how close they are to measure the difficulty of a play? Because of what I mentioned earlier about monotonicity, this will be a very similar measure to using the card values themselves. But, it's certainly a TTD[^4] . (Actual work coming soon)
+What if we calculate the play probability for each player, then use how close they are to measure the difficulty of a play? Because of what I mentioned earlier about monotonicity, this will be a very similar measure to using the card values themselves. But, it's certainly a TTD[^4] .
 
 [^4]: Thing To Do. One of my favorite TLAs[^5] thanks to Charlie Geyer
 
 [^5]: Three Letter Acronyms
 
 ## Future directions
+
+I'm planning on adding to this more as I have time. Maybe here, more likely as other posts. It's like the old joke about the researcher who has a finding interesting enough to be published in a top journal, or 3 respected journals, or 5 acceptable journals...
+
+Gotta fill up this blog somehow. 
+
 * Figure out the distribution of order statistics (maybe not much harder, since for discrete $p(X = x) = p(X \leq x) - p(X < x)$)
 * Make this a Shiny app so you can put this into practice at the table
 * Maybe there's a way to use this and the empirical win rates of teams to quantify the additional information players gain from the nonverbal communication?

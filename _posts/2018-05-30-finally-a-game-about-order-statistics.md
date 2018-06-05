@@ -132,7 +132,6 @@ Well...hard to say, but I have some ideas about what it is and isn't useful for.
 
 My first reaction was to take an example game and plot the play probability of a player at each card play. I'm not sure if this helps me understand the game better, because it's more of an 'oracle view' where you have to know the entire game state. But here's an example. Each bar in the plot is a card play, the height is the probability your lowest card was the overall lowest, and a red border around a bar indicates it was your play.
 
-![my photo]({{ site.url }}/assets/foo.png)
 ![Example of play probabilities]({{ site.url }}/assets/img/2018-05-30-finally-a-game-about-order-statistics/ex_play_prob.png)
 
 ### Play thresholds

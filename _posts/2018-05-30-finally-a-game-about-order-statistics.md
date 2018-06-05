@@ -123,7 +123,26 @@ mind(cards_left = 12,
 
 Hey! It worked!
 
-## Examples
+## What do I do with that info?
+So, there's an expression for the probability you should play a card. Neat! But what can we do with it? 
+
+Well...hard to say, but I have some ideas about what it is and isn't useful for. Holding everything else constant, it's a monotonically increasing function of your minimum value card, so knowing every player's play probability is equivalent to knowing the lowest card. There's not much fun about that. 
+
+### Play guide
+
+My first reaction was to take an example game and plot the play probability of a player at each card play. I'm not sure if this helps me understand the game better, because it's more of an 'oracle view' where you have to know the entire game state. But here's an example. Each bar in the plot is a card play, the height is the probability your lowest card was the overall lowest, and a red border around a bar indicates it was your play.
+
+![](assets/img/2018-05-30-finally-a-game-about-order-statistics/ex_play_prob.png)
+
+### Play thresholds
+
+We could calculate a minimum 'play threshold' that gives the group a certain probability of winning the overall game. But that grinds itself to a halt pretty fast. It's cool to think about this like the multiple testing problem; if you set the threshold to require 95% probability every time and play 20 cards, you've only got a $1 - 0.95^(20-1)$ 64% chance of actually making it out of the round alive (the last card is always 100%). But in practice you'll often stall out with all players having a lower confidence than they need to act. This might make a fun extension, though. What's the average maximum play probability at any point in the game? That is, how confident is the most confident player?
+
+### Play difficulty
+
+What if we calculate the play probability for each player, then use how close they are to measure the difficulty of a play? Because of what I mentioned earlier about monotonicity, this will be a very similar measure to using the card values themselves. But, it's certainly a TTD[^4]. (Actual work coming soon)
+[^4]: Thing To Do. One of my favorite TLAs[^5] thanks to Charlie Geyer
+[^5]: Three Letter Acronyms
 
 ## Future directions
 * Figure out the distribution of order statistics (maybe not much harder, since for discrete $p(X = x) = p(X \leq x) - p(X < x)$)

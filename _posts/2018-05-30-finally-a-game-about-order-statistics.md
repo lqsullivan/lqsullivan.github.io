@@ -48,9 +48,9 @@ $$
 \end{aligned}
 $$
 
-From line 2 to 3, the $X_j$ are drawn without replacement, so there's dependence
-From line 3 to 4, use the fact we know $X_{n-k+1},\dots, X_{n-1} > X_n = x$, so those probabilities are all 1
-Line 4 could (should?) go directly to the summation, but writing it out helped keep track of everything
+From line 2 to 3, the $X_j$ are drawn without replacement, so there's dependence.
+
+From line 3 to 4, use the fact we know our cards have value $x$ or greater, $X_{n-k+1},\dots, X_{n-1} > X_n = x$, so those probabilities are all 1.
 
 ### In English, please
 

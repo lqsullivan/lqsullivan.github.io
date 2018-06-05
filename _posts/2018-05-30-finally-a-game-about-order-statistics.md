@@ -62,7 +62,66 @@ Ok, not *confirming*, just making myself more confident. But that doesn't rhyme.
 
 We've got the explicit expression now. It's got a product, it doesn't depend on the values of any card but our minimum (the rest just change the count of remaining cards), and a few test cases pass sanity checks. But it's easy for mistakes and oversights to sneak in, so, when it's easy to simulate the result, I like to check it that way too.
 
-**insert simulation results**
+Here's a function that takes the relevant information and returns the probability your minimum value card is *the* minimum value card. If you supply the optional n\_sim, it'll shoot back a list that also contains the simulated probability.
+
+``` r
+mind <- function(cards_left, my_cards, my_min, prev_min, n_sim = NULL){
+  # probability from derived expression
+  out <- prod((100 - my_min - (my_cards - 1) - (0:(cards_left - my_cards - 1)))
+              / (100 - prev_min - my_cards - (0:(cards_left - my_cards - 1))))
+  # if asked, probability from simulation
+  if(!is.null(n_sim)){
+    # Sample other players' cards from the previous played card value to the 
+    #   maximum value remaining 
+    #   (WLOG, other cards in your hand are the highest possible)
+    sim <- replicate(n_sim, 
+                     min(sample(setdiff((prev_min + 1):(100 - (my_cards - 1)), my_min), 
+                                cards_left - my_cards, 
+                                replace = FALSE)))
+    sim_out <- 1 - mean(sim < my_min)
+    
+    return(list(out, sim_out))
+  } else{
+    return(out)
+  }
+}
+```
+
+Now let's give it a test case. I didn't bother making the arguments of `mind()` a function of the test set, but that shouldn't be hard if I want to later.
+
+``` r
+set.seed(1)
+# Example round 5 with 4 players
+test <- sample(1:100, 4*5, replace = FALSE)
+# Your cards
+test[1:5]
+```
+
+    ## [1] 27 37 57 89 20
+
+``` r
+# True play order
+sort(test)
+```
+
+    ##  [1]  6 16 19 20 27 32 34 37 43 57 58 61 62 63 67 83 86 88 89 97
+
+``` r
+# Say we're 8 cards in
+mind(cards_left = 12,
+     my_cards   = 3,
+     my_min     = 57,
+     prev_min   = 37,
+     n_sim      = 1e5)
+```
+
+    ## [[1]]
+    ## [1] 0.02369886
+    ## 
+    ## [[2]]
+    ## [1] 0.02308
+
+Hey! It worked!
 
 ## Examples
 

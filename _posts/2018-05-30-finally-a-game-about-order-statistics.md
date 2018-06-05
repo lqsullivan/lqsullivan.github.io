@@ -136,7 +136,7 @@ My first reaction was to take an example game and plot the play probability of a
 
 ### Play thresholds
 
-We could calculate a minimum 'play threshold' that gives the group a certain probability of winning the overall game. But that grinds itself to a halt pretty fast. It's cool to think about this like the multiple testing problem; if you set the threshold to require 95% probability every time and play 20 cards, you've only got a $1 - 0.95^{(20-1)} \approx 62%$ chance of actually making it out of the round alive (the last card is always 100%). But in practice you'll often stall out with all players having a lower confidence than they need to act. This might make a fun extension, though. What's the average maximum play probability at any point in the game? That is, how confident is the most confident player?
+We could calculate a minimum 'play threshold' that gives the group a certain probability of winning the overall game. But that grinds itself to a halt pretty fast. It's cool to think about this like the multiple testing problem; if you set the threshold to require 95% probability every time and play 20 cards, you've only got a $1 - 0.95^{(20-1)} \approx 62\%$ chance of actually making it out of the round alive (the last card is always 100%). But in practice you'll often stall out with all players having a lower confidence than they need to act. This might make a fun extension, though. What's the average maximum play probability at any point in the game? That is, how confident is the most confident player?
 
 ### Play difficulty
 

@@ -85,7 +85,7 @@ clt <- function(x, a){
   return(mean(x) + qnorm(1 - a, 0, 1) * sd(x))
 }
 
-# Test: beta(5, 2) ----
+# Test: beta(2, 5) ----
 a         <- 2
 b         <- 5
 true_mean <- a / (a + b)

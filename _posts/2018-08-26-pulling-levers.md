@@ -207,7 +207,7 @@ P(\bar{X} - E[\bar{X}] \geq t) &=    P(S_n - E[S_n] \geq nt) \\
 \end{aligned}
 $$
 
-Now notice that the thing in the exponent is quadratic in $s$, so we can find the minimum of it just like in high school $\frac{-b}{2a}$ (and that minimum will be the smallest thing that's still an upper bound). So the $s$ that gives the smallest result is $\frac{+tn}{2n/8} = 4n$ and that gives a max of $e^{-2nt^2}$.
+Now notice that the thing in the exponent is quadratic in $s$, so we can find the minimum of it just like in high school $\frac{-b}{2a}$ (and that minimum will be the smallest thing that's still an upper bound). So the $s$ that gives the smallest result is $\frac{+tn}{2n/8} = 4t$ and that gives a max of $e^{-2nt^2}$.
 
 That's Hoeffding's inequality: $P(\bar{X} - E[\bar{X}] \geq t) \leq e^{-2nt^2}$. Or, solving for $t$ like we did for the others, $t \leq \sqrt{\frac{-\log{(\alpha)}}{2n}}$ Not bad.
 

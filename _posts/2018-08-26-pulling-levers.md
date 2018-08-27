@@ -118,6 +118,8 @@ for(i in 1:length(n_seq)){
 
 ![Example of play probabilities]({{ site.url }}/assets/img/2018-08-26-pulling-levers/plug_in.png)
 
+I plotted the sample size on the log scale cause things change really quickly over the first few samples and I wanted to make those first 5 values more visible. Terrible for interpretation though, so pay attention to the axis values.
+
 Looks like the problem isn't as big as I thought for this one distribution [^4] The simulated coverage is at least as good as the nominal coverage for the Markov inequality at any sample size (again, not surprising), and it only performs poorly for Chebyshev's inequality when the sample size is 2, the minimum you need to compute a variance. This doesn't seem like a bad thing to do but...
 
 [^4]: It's almost not worth even showing this for just one distribution because the result is so dependent on which one I picked. And, if you think about when those estimates will be poor, it's when we have a small sample and a distribution that's relatively likely to take values far from the mean...which is exactly what we're trying to understand with concentration inequalities. For more details on this circular argument, see footnote 4.

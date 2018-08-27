@@ -224,6 +224,8 @@ The plot shows 3 different things. The big one is the real-time plot of payouts 
 
 ![]({{ site.url }}/assets/img/2018-08-26-pulling-levers/hoeffding_ex.gif)
 
+Notice that the binomial-ly fun game gets played more than you might expect based on its mean fun. The bars of proportion of total plays for each game seems to go in order from left to right, except that. In fact, there's *another* inequality called the Bhatia-Davis inequality that bounds the variance of a bounded distribution and it shows that the highest variance happens when the distribution is concentrated on the boundaries of its support (exactly what binomial does). So, in that sense, it's reasonable that it'd need more disproportionate samples to pin down the mean (and it's only the mean estimate goofing this up, cause remember the upper bound has nothing to do with the values of the realizations, only the count).
+
 So that's it. Feel free to try it out yourself at home. Although, if your collection is anything like mine, gathering that initial data from a play of every game you own might be the barrier.
 
 ## Future directions

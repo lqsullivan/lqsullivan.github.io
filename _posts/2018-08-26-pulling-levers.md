@@ -216,14 +216,13 @@ Here's an example to illustrate what the game selection process looks like. Imag
 
 So, I picked a few name-brand distributions with different properties, one has a heavier upper tail, one has a heavier lower tail, one is bimodal, one takes only values 0 or 1, and one is uniform. This is nowhere near an exhaustive display of this approach, but it's a good illustration of the practical decisions you need to make to implement it.
 
-Like, how do you pick the confidence level? The bound needa $\alpha$ to function. One immediate idea is to pick a low number, maybe 1%. How about instead, we pick $\alpha$ proportional to the total number of times we've played so that as we gain information, we require more confidence in the result? $\alpha = \frac{1}{\text{iter}^4}$ is a commonly used 'decay' for the confidence that goes by the name UCB1 (for Upper Confidence Bound). That leads to an upper bound of $\sqrt{\frac{2\log{t}}{2n}}$, which is what I used for the simulation below.
+Like, how do you pick the confidence level? The bound needs $\alpha$ to function. One immediate idea is to pick a low number, maybe 1%. How about instead, we pick $\alpha$ proportional to the total number of times we've played so that as we gain information, we require more confidence in the result? $\alpha = \frac{1}{\text{iter}^4}$ is a commonly used 'decay' for the confidence that goes by the name UCB1 (for Upper Confidence Bound). That leads to an upper bound of $\sqrt{\frac{2\log{t}}{2n}}$, which is what I used for the simulation below.
 
 The process is pretty easy, calculate the upper bound of the mean fun for each game, pick the highest one to play (if there are any that have no plays, randomly play one of those instead), then repeat. Each iteration the confidence of the confidence bound increases for all games and the mean changes for one of them, so the estimates can rise and fall. Since games that don't get sampled have upper bounds that rise relative to the last iteration, we'll eventually play every game an infinite amount of times. So there's no worry about getting stuck in a loop where one game has a few bad plays and we never touch it again.
 
 The plot shows 3 different things. The big one is the real-time plot of payouts from each pull (shown as black dots), the current Hoeffding upper bound (red/green bars, green is the current maximum which will be played on the next iteration), and the mean fun for each (blue bars). Each fun distribution has a label below it and right under that is a barplot of the total proportion of times we've played each game. The bar on the far right shows the mean fun over all the plays in relation to blue lines matching the mean fun for each game. The games are sorted with the lowest on the left to make it easier to parse. It runs for 500 plays at a pretty good clip, so stick around for a couple repeats.
 
-![](./mab_test_post_files/figure-html/hoeffding_ex.gif)
-
+![]({{ site.url }}/assets/img/2018-08-26-pulling-levers/hoeffding_ex.gif)
 
 So that's it. Feel free to try it out yourself at home. Although, if your collection is anything like mine, gathering that initial data from a play of every game you own might be the barrier.
 

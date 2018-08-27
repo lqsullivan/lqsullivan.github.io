@@ -177,7 +177,7 @@ L'(h)  &= -p + \frac{1}{1-p+pe^h} pe^h \\
 L'(0)  &= -p + p = 0 \\
 L''(h) &= \frac{(1-p+pe^h)pe^h - {(pe^h)}^2}{(1-p+pe^h)^2} \\
        &= \frac{pe^h}{1-p+pe^h} \frac{(1-p+pe^h)-pe^h}{(1-p+pe^h)} \\
-       &= \frac{pe^h}{1-p+pe^h} (1 - \frac{pe^h}{1-p+pe^h})
+       &= \frac{pe^h}{1-p+pe^h} (1 - \frac{pe^h}{1-p+pe^h}) \\
 \end{aligned}
 $$
 
@@ -188,7 +188,7 @@ Sooo...back to Taylor's theorem, remembering that the remainder term can be writ
 $$
 \begin{aligned}
 L(h) &= L(0) + L'(0) \cdot h + \frac{L''(\eta)}{2!}\cdot h^2\\
-     &\leq 0 + 0\cdot h + \frac{1}{2} \cdot \frac{1}{4}h^2 = \frac{h^2}{8}
+     &\leq 0 + 0\cdot h + \frac{1}{2} \cdot \frac{1}{4}h^2 = \frac{h^2}{8} \\
 \end{aligned}
 $$
 

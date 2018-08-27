@@ -180,6 +180,7 @@ L''(h) &= \frac{(1-p+pe^h)pe^h - {(pe^h)}^2}{(1-p+pe^h)^2} \\
        &= \frac{pe^h}{1-p+pe^h} (1 - \frac{pe^h}{1-p+pe^h})
 \end{aligned}
 $$
+
 The last line is quadratic in $\frac{pe^h}{1-p+pe^h}$ and that quadratic has maximum value 1/4 when t = 1/2, which happens when $h = \log(\frac{1-p}{p}) = \log(\frac{-b}{a})$ (remember $p = \frac{-a}{b-a}$). And it can actually obtain that because $E[X] = 0$ and $P(a \leq X \leq b) = 1$ so $a \leq 0$ (except if X has a degenerate distribution with all the mass on 0. In that case, the bound we're getting to still holds, except then we don't care cause we already know the MGF)
 
 Sooo...back to Taylor's theorem, remembering that the remainder term can be written in terms of $L''(\eta)$ for some $a \leq \eta \leq x$
@@ -190,6 +191,7 @@ L(h) &= L(0) + L'(0) \cdot h + \frac{L''(\eta)}{2!}\cdot h^2\\
      &\leq 0 + 0\cdot h + \frac{1}{2} \cdot \frac{1}{4}h^2 = \frac{h^2}{8}
 \end{aligned}
 $$
+
 And we're done (with the lemma). $E[e^{\lambda X}] \leq \frac{\lambda^2}{8}$.
 
 To get a useful bound out of it, we can go back to Markov's inequality, but this time using $S_n = \sum X_i = n\cdot\bar{X}$ (along with the $X_i$ independence and the lemma we just proved to get rid of that expectation)
@@ -204,6 +206,7 @@ P(\bar{X} - E[\bar{X}] \geq t) &=    P(S_n - E[S_n] \geq nt) \\
                                &\leq e^{-stn + \frac{s^2n}{8}} \\
 \end{aligned}
 $$
+
 Now notice that the thing in the exponent is quadratic in $s$, so we can find the minimum of it just like in high school $\frac{-b}{2a}$ (and that minimum will be the smallest thing that's still an upper bound). So the $s$ that gives the smallest result is $\frac{+tn}{2n/8} = 4n$ and that gives a max of $e^{-2nt^2}$.
 
 That's Hoeffding's inequality: $P(\bar{X} - E[\bar{X}] \geq t) \leq e^{-2nt^2}$. Or, solving for $t$ like we did for the others, $t \leq \sqrt{\frac{-\log{(\alpha)}}{2n}}$ Not bad.

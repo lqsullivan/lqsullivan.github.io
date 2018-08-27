@@ -2,6 +2,8 @@
 layout: post
 title: Pulling Levers - A Multi-armed bandit approach to board game night
 tags: [board games, probability, concentration inequalities]
+feature-img: "assets/img/pexels/game_shelf.jpg"
+thumbnail: "assets/img/thumbnails/game_shelf.jpg"
 mathjax: true
 excerpt_separator: <!--jump-->
 ---

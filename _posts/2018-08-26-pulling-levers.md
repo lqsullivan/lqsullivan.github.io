@@ -47,7 +47,7 @@ t           &\leq \frac{E[X]}{\alpha}
 \end{align}
 $$ 
 
-Note the second line, where I picked a coverage probability $P(X \geq t) = \alpha$ and solved for the bound $a$, giving me an upper bound for a probability rather than a probability for a bound.
+Note the second line, where I picked a coverage probability $P(X \geq t) = \alpha$ and solved for the bound $t$, giving me an upper bound for a probability rather than a probability for a bound.
 
 Once you get into the other ones, you'll notice Markov's Inequality is kind of the pilgrimage all concentration inequalities have to make. The second most famous one, Chebyshev's Inequality, is based on Markov's inequality and gives a tighter bound that takes the variance into account (notice $t^2$ in the denominator instead of $t$, that's really important to how quickly the probability 'concentrates'. $t$ is not great, $t^2$ is better, but we'd really like something exponential in the bound.).
 
@@ -170,7 +170,7 @@ $$
 \end{aligned}
 $$
 
-where $L(h) = -hp + \log{(1-p+pe^h)}$. Now we're going to use Taylor's theorem with a second-order polynomial approximation (excluding the $h_k(x)$ term at the end, making it an inequality instead) to bound this. For that we need to evaluate the function and a couple derivatives.
+where $L(h) = -hp + \log{(1-p+pe^h)}$. Now we're going to use Taylor's theorem with a second-order polynomial approximation to bound this. For that we need to evaluate the function and a couple derivatives.
 
 $$
 \begin{aligned}

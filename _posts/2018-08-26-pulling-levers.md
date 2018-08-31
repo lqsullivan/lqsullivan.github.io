@@ -47,7 +47,7 @@ t           &\leq \frac{E[X]}{\alpha}
 \end{align}
 $$ 
 
-Note the second line, where I picked a coverage probability $P(X \geq t) = \alpha$ and solved for the bound $a$, giving me an upper bound for a probability rather than a probability for a bound.
+Note the second line, where I picked a coverage probability $P(X \geq t) = \alpha$ and solved for the bound $t$, giving me an upper bound for a probability rather than a probability for a bound.
 
 Once you get into the other ones, you'll notice Markov's Inequality is kind of the pilgrimage all concentration inequalities have to make. The second most famous one, Chebyshev's Inequality, is based on Markov's inequality and gives a tighter bound that takes the variance into account (notice $t^2$ in the denominator instead of $t$, that's really important to how quickly the probability 'concentrates'. $t$ is not great, $t^2$ is better, but we'd really like something exponential in the bound.).
 
@@ -170,7 +170,7 @@ $$
 \end{aligned}
 $$
 
-where $L(h) = -hp + \log{(1-p+pe^h)}$. Now we're going to use Taylor's theorem with a second-order polynomial approximation (excluding the $h_k(x)$ term at the end, making it an inequality instead) to bound this. For that we need to evaluate the function and a couple derivatives.
+where $L(h) = -hp + \log{(1-p+pe^h)}$. Now we're going to use Taylor's theorem with a second-order polynomial approximation to bound this. For that we need to evaluate the function and a couple derivatives.
 
 $$
 \begin{aligned}
@@ -218,7 +218,7 @@ Here's an example to illustrate what the game selection process looks like. Imag
 
 So, I picked a few name-brand distributions with different properties, one has a heavier upper tail, one has a heavier lower tail, one is bimodal, one takes only values 0 or 1, and one is uniform. This is nowhere near an exhaustive display of this approach, but it's a good illustration of the practical decisions you need to make to implement it.
 
-Like, how do you pick the confidence level? The bound needs $\alpha$ to function. One immediate idea is to pick a low number, maybe 1%. How about instead, we pick $\alpha$ proportional to the total number of times we've played so that as we gain information, we require more confidence in the result? $\alpha = \frac{1}{\text{iter}^4}$ is a commonly used 'decay' for the confidence that goes by the name UCB1 (for Upper Confidence Bound). That leads to an upper bound of $\sqrt{\frac{2\log{t}}{2n}}$, which is what I used for the simulation below.
+Like, how do you pick the confidence level? The bound needs $\alpha$ to function. One immediate idea is to pick a low number, maybe 1%. How about instead, we pick $\alpha$ proportional to the total number of times (denoted here by $i$ for iteration) we've played so that as we gain information, we require more confidence in the result? $\alpha = \frac{1}{\text{i}^4}$ is a commonly used 'decay' for the confidence that goes by the name UCB1 (for Upper Confidence Bound). That leads to an upper bound of $\sqrt{\frac{2\log{i}}{2n}}$, which is what I used for the simulation below.
 
 The process is pretty easy, calculate the upper bound of the mean fun for each game, pick the highest one to play (if there are any that have no plays, randomly play one of those instead), then repeat. Each iteration the confidence of the confidence bound increases for all games and the mean changes for one of them, so the estimates can rise and fall. Since games that don't get sampled have upper bounds that rise relative to the last iteration, we'll eventually play every game an infinite amount of times. So there's no worry about getting stuck in a loop where one game has a few bad plays and we never touch it again.
 
@@ -245,13 +245,15 @@ The next related piece I'll tackle is what happens when the payouts are binary. 
 I'll post the relevant code I used to generate this data on my GitHub soon and link it here. Standard disclaimer applies, I don't pretty up most of my code for headhunters. I'm not writing immaculately structured/commented maintainable corporate stuff here, I'm getting analysis out the door and moving on to a new topic :)
 
 ## References
-https://lilianweng.github.io/lil-log/2018/01/23/the-multi-armed-bandit-problem-and-its-solutions.html#thompson-sampling
+<https://lilianweng.github.io/lil-log/2018/01/23/the-multi-armed-bandit-problem-and-its-solutions.html#thompson-sampling>
 
-https://www.cs.cornell.edu/~sridharan/concentration.pdf
+<https://www.cs.cornell.edu/~sridharan/concentration.pdf>
 
-https://en.wikipedia.org/wiki/Hoeffding%27s_inequality
+<https://en.wikipedia.org/wiki/Hoeffding%27s_inequality>
 
-https://crypto.stanford.edu/~blynn/pr/markov.html
+<https://crypto.stanford.edu/~blynn/pr/markov.html>
+
+<https://jeremykun.com/2013/10/28/optimism-in-the-face-of-uncertainty-the-ucb1-algorithm/>
 
 
 ### Footnotes

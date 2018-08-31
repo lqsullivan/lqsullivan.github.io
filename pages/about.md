@@ -6,7 +6,7 @@ feature-img: "assets/img/pexels/wildfire.jpg"
 tags: [About]
 ---
 
-I'm Logan. Right now I'm a statistician at Medtronic. I got my masters in statistics from the University of Minnesota, and before that I spent some time doing neurobiology research at Missouri State University. If you want to know more about my academic and profesional backgrounds, check out my Linkedin (see footer).
+I'm Logan. Right now I'm a statistician at Medtronic. I got my masters in statistics from the University of Minnesota, and before that I spent some time doing neurobiology research at Missouri State University. If you want to know more about my academic and professional backgrounds, check out my LinkedIn (see footer).
 
 In my spare time, I play ton of board games, read a bit, play clawhammer banjo, work through a backlog of movies, and try to document some of my other projects here.
 

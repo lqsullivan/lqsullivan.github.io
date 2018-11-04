@@ -1,8 +1,8 @@
 ---
 layout: post
 title: Total Station from scratch
-feature-img: "assets/img/portfolio/circus.png"
-img: "assets/img/portfolio/circus.png"
+feature-img: "assets/img/portfolio/destination.png"
+img: "assets/img/portfolio/destination.png"
 date: 3 June 2018
 tags: [surveying, gaussian process, lasers, portfolio]
 ---

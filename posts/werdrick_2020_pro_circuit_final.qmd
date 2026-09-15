@@ -6,6 +6,7 @@ image: "werdrick_title_image.png"
 date: "2026-09-12"
 execute: 
   echo: false
+  warning: false
 format: 
   html:
     toc: true
@@ -65,7 +66,7 @@ pc_final %>%
 
 Here's something that doesn't work.
 
-Assume each player is equally skilled and has the same 1 in 4 chance of not losing in round. The distribution of games won is negative binomial. Then if each player is independent, we can use one of my favorite results about the distribution of order statistics to compute the maximum number of games a player would win in sample of 20 players is
+Assume each player is equally skilled and has the same 1 in 4 chance of not losing in round. The distribution of games won is negative binomial. Then if each player is independent, we can use one of my favorite results about the distribution of order statistics to compute the maximum number of games a player would win in sample of 20 players
 
 ::: {.column-margin}
 Order statistics are ranked observations from a sample. The first order statistic $X_{(1)}$ is the minimum and the last $X_{(n)}$ for a sample of size $n$ is the maximum.

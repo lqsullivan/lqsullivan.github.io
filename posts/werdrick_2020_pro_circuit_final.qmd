@@ -1,0 +1,646 @@
+---
+title: "Stern Pro Circuit Final 2020"
+description: "How great was Jason Werdrick's run?"
+bibliography: pro_circuit_ladder.bib
+image: "werdrick_title_image.png"
+date: "2026-09-12"
+execute: 
+  echo: false
+format: 
+  html:
+    toc: true
+    toc-depth: 1
+    toc-location: left
+    nocite: |
+      @*
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+#| include: false
+
+library(tidyverse)
+library(tidybayes)
+library(here)
+library(ggtext)
+
+here::i_am("posts/werdrick_2020_pro_circuit_final.qmd")
+
+pc_final <- read_csv(here("data/processed/stern_pro_circuit_final_2020_results.csv"))
+
+extrafont::font_import(pattern = "QuattrocentoSans", 
+                       prompt = FALSE)
+extrafont::loadfonts(device = "win")
+
+ggplot2::theme_set(theme_minimal() +
+                     theme(text = element_text(size = 15,
+                                               family = "Quattrocento Sans")))
+options(knitr.table.html.attr = "quarto-disable-processing=true")
+
+inline <- list()
+```
+
+The 2020 Stern Pro Circuit final was 20 player ladder tournament, which started with the 4 lowest-seeded players and eliminated the lowest scorer every round to bring in the next lowest remaining seed. Jason Werdrick started in the first round and advanced in an impressive 16 consecutive games before being eliminated in 5th place.
+
+::: {.column-margin}
+I'm going to say 'win' a lot when 'advance' would maybe apply better. But just know I mean not-loss in a given round, not winner of the entire tournament.
+:::
+
+{{< video https://www.youtube.com/watch?v=pIqx6ZF6K9Q >}}[@proCircuitMatch1]
+
+That seemed like quite a run, but it got me thinking about post-hoc analysis and how unlikely this actually is. Since you only have to be not-last to move on, and maybe my intuition is wrong and *someone* was likely to have a winning streak that long.
+
+Here's how the tournament turned out
+
+```{r}
+pc_final %>%
+  arrange(rank) %>%
+  select(rank, player, seed, rounds_won, ifpa_rating) %>%
+  knitr::kable(digits = 0) %>%
+  kableExtra::kable_styling(full_width = FALSE)
+```
+
+# Negative binomial
+
+Here's something that doesn't work.
+
+Assume each player is equally skilled and has the same 1 in 4 chance of not losing in round. The distribution of games won is negative binomial. Then if each player is independent, we can use one of my favorite results about the distribution of order statistics to compute the maximum number of games a player would win in sample of 20 players is
+
+::: {.column-margin}
+Order statistics are ranked observations from a sample. The first order statistic $X_{(1)}$ is the minimum and the last $X_{(n)}$ for a sample of size $n$ is the maximum.
+:::
+
+$$
+\begin{align}
+P(X_{(j)}  = x) &= P(X_{(j)} \leq x) - P(X_{(j)} \leq x - 1) \\
+P(X_{(j)} \leq x) &= \sum_{k=j}^{n} \binom{n}{k} F_X(x)^k (1-F_X(x))^{n-k} \\
+\end{align}
+$$
+
+So $P(X_{(20)} = x - 1) = F_X(x - 1)^{20} - F_X(x - 2)^{20}$, where $F_X$ is the cumulative negative binomial distribution and we shift everything down one cause that counts games played and we're interested in wins. The distribution of the longest win streak looks like
+
+```{r}
+nbinom_longest <- 
+  tibble(
+    longest = 0:30,
+    p = pnbinom(q = longest, size = 1, prob = 0.25)^20 - pnbinom(q = longest - 1, size = 1, prob = 0.25)^20
+  ) 
+
+inline$nbinom_median <-
+  nbinom_longest %>% 
+  mutate(cum_p = cumsum(p)) %>%
+  filter(cum_p >= 0.5) %>%
+  first() %>%
+  pull(longest)
+
+inline$nbinom_jason <-
+  nbinom_longest %>% 
+  mutate(cum_p = cumsum(p)) %>%
+  filter(longest == 15) %>%
+  pull(cum_p) %>%
+  `-`(1, .)
+```
+
+```{r}
+p_nbinom <-
+  nbinom_longest %>%
+  ggplot(aes(x = longest, y = p)) +
+  geom_point(size = 2.5, color = "#000000") +
+  geom_point(data = . %>% filter(longest == 15),
+             size = 2.5, color = "#CF2E2E") +
+  annotate(geom = "text",
+           x = 8, y = 0.02,
+           hjust = 0, family = "Quattrocento Sans", fontface = "bold",
+           color = "#CF2E2E",
+           label = glue::glue("And Jason's 15 would happen\nin ~{scales::percent(inline$nbinom_jason, accuracy = 1)} of tournaments")) +
+  annotate(geom = "curve",
+           x = 13, y = 0.035,
+           xend = 15 - 0.3, yend = nbinom_longest %>% filter(longest == 15) %>% pull(p),
+           linewidth = 0.7, curvature = -0.2, color = "#CF2E2E",
+           arrow = arrow(length = unit(3, units = "mm"))) +
+  scale_x_continuous(limits = c(3, 19),
+                     breaks = scales::pretty_breaks(5),
+                     minor_breaks = FALSE) +
+  scale_y_continuous(limits = c(0, 0.18),
+                     breaks = scales::pretty_breaks(5),
+                     labels = scales::percent) +
+  scale_color_manual(guide = "none") +
+  labs(title = glue::glue("Under this model, the median streak is {inline$nbinom_median}"),
+       x = "Longest win streak",
+       y = "Probability")
+
+p_nbinom
+```
+
+<br>
+
+::: {.column-margin}
+This color is Stern red:<span style='color:#CF2E2E; font-weight:bold'>#CF2E2E</span>
+:::
+
+That model is cute, but there are a bunch of problems with it. Win streaks aren't distributed as negative binomial, cause the support isn't right, it takes at least 3 games to win the tournament and it eventually ends, so nobody can win more than 19 games. Players don't have the same, independent probability of losing the underlying games; it's skill dependent and most players in a round are also in the next round.
+
+Worse, even if we knew the distribution of the number of wins, we can't just do the cool order statistics thing. Since players compete against each other, their longest win streaks aren't independent--every match I lose makes 3 other player's streaks longer.
+
+That's intimidating, so I pre-emptively gave up on the math to do a simulation.
+
+# Simulated win streaks
+
+## Uniform win probability
+
+To start, assume players have the same win probability (which is not unreasonable--these are 20 of the best tournament players in pinball).
+
+```{r}
+#| echo: true
+
+# given a set of players and their relative win probs, return the longest streak
+sim_ladder <- function(skill_data) {
+  # initialize results and first active players
+  seed <- 1:20
+  round_out <- rep(NA, length(seed))
+  active <- 20:17
+  
+  # check for glicko-like names
+  skill_type <- 
+    if (all(c("r", "rd") %in% names(skill_data))) {
+      "glicko"
+    } else {
+      "raw"
+    }
+  
+  # sim tournament
+  for (round in 1:19) {
+    # get skills for active players
+    skill <- 
+      if (skill_type == "glicko") {
+        skill <- compute_p_lose_all(player_data = skill_data,
+                                    player_seeds = active)
+      } else {
+        skill <- skill_data[active]
+      }
+    
+    # sample loser weighted by skill
+    loser <- sample(active, 1, prob = skill)
+    
+    # remove loser
+    active <- active[active != loser]
+    # record info 
+    round_out[loser] <- round
+    
+    # add next active player
+    if (round < 17) {
+      active <- c(active, 17 - round)
+    }
+  }
+  
+  # assign winner to phantom last round
+  round_out[active] <- round + 1
+  
+  return(round_out)
+}
+```
+
+```{r}
+#| cache: true
+
+sim_uniform <- 
+  replicate(1e6, sim_ladder(skill = rep(1, 20)), simplify = FALSE) %>%
+  do.call(what = rbind, args = .) %>%
+  as_tibble() %>%
+  mutate(id = 1:n()) %>%
+  pivot_longer(cols = -id,
+               names_to = "seed",
+               names_prefix = "V",
+               values_to = "round_out") %>%
+  mutate(across(.cols = c(seed, round_out),
+                .fns  = as.integer),
+         round_in = pmax(1, 18 - seed),
+         wins = round_out - round_in) %>%
+  group_by(id) %>%
+  summarize(longest = max(wins)) %>%
+  count(longest) %>%
+  mutate(p = n/sum(n))
+
+inline$sim_unif_median <-
+  sim_uniform %>% 
+  mutate(cum_p = cumsum(p)) %>%
+  filter(cum_p >= 0.5) %>%
+  first() %>%
+  pull(longest)
+
+inline$sim_unif_jason <-
+  sim_uniform %>% 
+  mutate(cum_p = cumsum(p)) %>%
+  filter(longest == 15) %>%
+  pull(cum_p) %>%
+  `-`(1, .)
+```
+
+```{r}
+p_sim_uniform <- 
+  sim_uniform %>%
+  ggplot(aes(x = longest, y = p)) +
+  # geom_point(data = nbinom_longest,
+  #            aes(x = x, y = p),
+  #            size = 2.5, color = "grey50", alpha = 0.1) +
+  geom_point(size = 2.5, color = "#000000") +
+  geom_point(data = . %>% filter(longest == 15),
+             size = 2.5, color = "#CF2E2E") +
+  annotate(geom = "text",
+           x = 8, y = 0.012,
+           hjust = 0, family = "Quattrocento Sans", fontface = "bold",
+           color = "#CF2E2E",
+           label = glue::glue("And Jason's 15 is\na rarer ~{scales::percent(inline$sim_unif_jason, accuracy = 1)}")) +
+  annotate(geom = "curve",
+           x = 12, y = 0.025,
+           xend = 15 - 0.5, yend = sim_uniform %>% filter(longest == 15) %>% pull(p),
+           linewidth = 0.7, curvature = -0.2, color = "#CF2E2E",
+           arrow = arrow(length = unit(3, units = "mm"))) +
+  scale_x_continuous(limits = c(0, 19),
+                     breaks = scales::pretty_breaks(5),
+                     minor_breaks = FALSE) +
+  scale_y_continuous(limits = c(0, 0.18),
+                     breaks = scales::pretty_breaks(5),
+                     labels = scales::percent) +
+  scale_color_manual(guide = "none") +
+  labs(title = glue::glue("For uniform skill, the simulated median streak is {inline$sim_unif_median}"),
+       x = "Longest streak",
+       y = "Probability")
+
+p_sim_uniform
+```
+
+It surprises me that the median win streak is so high. My initial intuition was more like 5, but since each game has 3 'winners' by our definition, I was underestimating the number of ways streaks can exist.
+
+## Player skill
+
+What if we don't assume all players are equal? I would expect the distribution of the longest streak to shift left, because players with longer possible streaks are lower seeds and are more likely to lose.
+
+We can pull Matchplay skill estimates from the day of that tournament (October 19, 2022) for that. My understanding is that these use Glicko, which gives pairwise comparisons, so how do we translate that into win or elimination probability?
+
+One (possibly bad) way is to think of a 4 player match as $\binom{4}{2} = 6$ head-to-head matches and model those win probabilities, then find the probability of each player losing to every other player. That won't make a probability distribution over the 4 players because they don't add to 1, but we can treat them as 'relative risks' of losing to everyone and scale them up. 
+
+::: {.column-margin}
+I know there are papers out there about rankings for multiplayer games, but that's a topic for another day. Perhaps never.
+:::
+
+::: {.column-margin}
+#### Glicko, quicko
+
+$$
+E = \frac{1}{1 + 10^\frac{-g \big( \sqrt{RD_i^2 + RD_j^2} \big) (r_i - r_j)}{400}}
+$$
+
+where $g(x) = \frac{1}{\sqrt(1 + (3q^2x^2)/\pi}$ and $q = \frac{\ln(10)}{400}$
+
+For Matchplay.events: provisional rating 1500, max rd 125, min rd 15, system constant 3.7775 [@matchplayGlicko]
+:::
+
+```{r}
+#| eval: false
+
+# matchplay vs ifpa ratings, do they align?
+pc_final %>%
+  ggplot(aes(x = ifpa_rating, y = matchplay_rating)) +
+  geom_point() +
+  geom_text(aes(label = player), hjust = 0, nudge_x = 5, size = 4) +
+  geom_abline(intercept = 0, slope = 1) +
+  scale_x_continuous(limits = c(1650, 2100)) +
+  scale_y_continuous(limits = c(1650, 2100)) +
+  coord_equal()
+```
+
+```{r}
+g <- function(x) {1/sqrt(1 + 3 * (log(10)/400)^2 * x^2 / pi)}
+
+e <- function(p1, p2) {
+  1/(1 + 10^(-g(sqrt(p1$rd^2 + p2$rd^2)) * (p1$r - p2$r) / 400))
+}
+
+compute_p_lose_all <- function(player_data, player_seeds) {
+  player_data %>%
+    filter(seed %in% player_seeds) %>%
+    select(player, r, rd) %>%
+    nest(data = c(r, rd)) %>%
+    {expand_grid(tibble(p1 = .$player, p1_data = .$data), 
+                tibble(p2 = .$player, p2_data = .$data))} %>%
+    filter(p1 != p2) %>%
+    mutate(p = map2_dbl(.x = p1_data, .y = p2_data, .f = e)) %>%
+    group_by(p1) %>%
+    summarize(p_lose_all = prod(1 - p)) %>%
+    mutate(p_lose_all_norm = p_lose_all/sum(p_lose_all)) %>%
+    pull(p_lose_all_norm)
+}
+```
+
+For example, consider the first 2020 Stern Pro Circuit Final matchup.
+
+```{r}
+ratings <- 
+  pc_final %>%
+  filter(seed %in% 17:20) %>%
+  select(player, matchplay_rating, matchplay_rd) %>%
+  rename(r = matchplay_rating, rd = matchplay_rd) %>%
+  nest(data = c(r, rd))
+
+pc_final %>%
+  filter(seed %in% 17:20) %>%
+  select(seed, player, ifpa_rating, matchplay_rating, matchplay_rd) %>%
+  knitr::kable(digits = 0) %>%
+  kableExtra::kable_styling(full_width = FALSE)
+```
+
+The resulting pair-wise matchups, in this example Luke Nahorniak is slightly favored over all other players (since this is based on ELO and nothing else, the highest ranked player will always be ranked over all others, no rock-paper-scissors effects).
+
+```{r}
+#| fig-width: 5
+#| fig-height: 5
+#| fig-align: 'center'
+
+player_pairs <- 
+  expand_grid(
+    tibble(p1 = ratings$player, p1_data = ratings$data), 
+    tibble(p2 = ratings$player, p2_data = ratings$data)
+  ) %>%
+  filter(p1 != p2) %>%
+  mutate(p1_win = map2_dbl(.x = p1_data, .y = p2_data, .f = e)) %>%
+  select(p1, p2, p1_win) 
+
+player_pairs %>%
+  mutate(p1 = factor(p1, levels = rev(c("Jason Werdrick", "Zach Sharpe", "Luke Nahorniak", "Derek Price"))),
+         p2 = factor(p2, levels = rev(c("Jason Werdrick", "Zach Sharpe", "Luke Nahorniak", "Derek Price")))) %>%
+  rowwise() %>%
+  mutate(p_pair = paste(sort(c(p1, p2)), collapse = ", ")) %>%
+  ungroup() %>%
+  group_by(p_pair) %>%
+  distinct(p_pair, .keep_all = TRUE) %>%
+  mutate(p2 = str_extract(p2, "\\w+") %>% factor(., levels = rev(c("Jason", "Zach", "Luke", "Derek")))) %>%
+  ggplot(aes(x = p2, y = p1, fill = p1_win)) +
+  geom_tile(color = "#000000") +
+  geom_text(aes(label = scales::percent(p1_win, accuracy = 1),
+                color = ifelse(p1_win > 0.5, "#FFFFFF", "#000000")),
+            family = "Quattrocento Sans") +
+  scale_x_discrete(position = "top") +
+  scale_y_discrete() +
+  scale_color_identity() +
+  scale_fill_gradient(guide = "none",
+                      low = "#FFFFFF", high = "#CF2E2E") +
+  coord_equal() +
+  labs(x = NULL,
+       y = NULL) +
+  theme(axis.title.x.top  = element_text(vjust = 3),
+        margins = margin(t = 20))
+```
+
+Then we can compute the probability (assuming independence) of each player losing to *every* other player (which is a proxy for coming in last), then normalize that to get a probability distribution of coming in last.
+
+Independence is the part that I think hurts this the most, since a bad game in a head-to-head matchup would only cause one loss, but in a 4 player game would be 3 head-to-head losses.
+
+```{r}
+expand_grid(tibble(p1 = ratings$player, p1_data = ratings$data), 
+            tibble(p2 = ratings$player, p2_data = ratings$data)) %>%
+  filter(p1 != p2) %>%
+  mutate(p = map2_dbl(.x = p1_data, .y = p2_data, .f = e)) %>%
+  group_by(p1) %>%
+  summarize(p_lose_all = prod(1 - p)) %>%
+  mutate(normalized = p_lose_all/sum(p_lose_all),
+         p_lose_all = scales::percent(p_lose_all, accuracy = 1),
+         normalized = scales::percent(normalized, accuracy = 1)) %>%
+  knitr::kable() %>%
+  kableExtra::kable_styling(full_width = FALSE)
+```
+
+### Apply to Monte Carlo
+
+```{r}
+#| eval: false
+#| cache: true
+
+# # this is commented out cause I coudln't get it to stop running when rendering
+# # the quarto website even with cache and eval
+# library(parallel)
+# 
+# detectCores()
+# 
+# cl <- makeCluster(4)
+# 
+# clusterEvalQ(cl, expr = {
+#   library(dplyr)
+#   library(tidyr)
+#   library(purrr)
+# })
+# 
+# clusterExport(cl, varlist = list("pc_final", "sim_ladder", "compute_p_lose_all", "g", "e"))
+# 
+# start_time <- Sys.time()
+# glicko_sim <- 
+#   clusterEvalQ(cl, 
+#                expr = replicate(n = 10000/4,
+#                                 expr = sim_ladder(skill_data = pc_final %>% 
+#                                                     arrange(seed) %>%
+#                                                     select(seed, player, 
+#                                                            r = matchplay_rating, 
+#                                                            rd = matchplay_rd)),
+#                                 simplify = FALSE))
+# Sys.time() - start_time
+#              
+# glicko_sim <- 
+#   glicko_sim %>%
+#   unlist(recursive = FALSE) %>%
+#   do.call(what = rbind, args = .) %>%
+#   as_tibble() %>%
+#   mutate(id = 1:n()) %>%
+#   pivot_longer(cols = -id,
+#                names_to = "seed",
+#                names_prefix = "V",
+#                values_to = "round_out") %>%
+#   mutate(across(.cols = c(seed, round_out),
+#                 .fns  = as.integer),
+#          round_in = pmax(1, 18 - seed),
+#          wins = round_out - round_in,
+#          rank = 21 - round_out)
+# 
+# write_csv(glicko_sim, here("data/processed/glicko_sim_results.csv"))
+```
+
+```{r}
+sim_glicko_raw <- 
+  read_csv(here("data/processed/glicko_sim_results.csv"), 
+           progress = FALSE, show_col_types = FALSE)
+
+sim_glicko <- 
+  sim_glicko_raw %>%
+  group_by(id) %>%
+  summarize(longest = max(wins)) %>%
+  count(longest) %>%
+  mutate(p = n/sum(n))
+
+inline$sim_glicko_median <-
+  sim_glicko %>% 
+  mutate(cum_p = cumsum(p)) %>%
+  filter(cum_p >= 0.5) %>%
+  first() %>%
+  pull(longest)
+
+inline$sim_glicko_jason <-
+  sim_glicko %>% 
+  mutate(cum_p = cumsum(p)) %>%
+  filter(longest == 15) %>%
+  pull(cum_p) %>%
+  `-`(1, .)
+```
+
+```{r}
+p_sim_skill <-
+  sim_glicko %>%
+  ggplot(aes(x = longest, y = p)) +
+  geom_point(data = sim_uniform,
+             size = 2.5, color = "#b3b3b3") +
+  geom_point(size = 2.5, color = "#000000") +
+  geom_point(data = . %>% filter(longest == 15),
+             size = 2.5, color = "#CF2E2E") +
+  # # annotate 15 wins
+  # annotate(geom = "text",
+  #          x = 8, y = 0.012,
+  #          hjust = 0, family = "Quattrocento Sans", fontface = "bold",
+  #          color = "#CF2E2E",
+  #          label = glue::glue("Jason's 15 is\na similar ~{scales::percent(inline$sim_glicko_jason, accuracy = 1)}")) +
+  # annotate(geom = "curve",
+  #          x = 12, y = 0.025,
+  #          xend = 15 - 0.5, yend = sim_glicko %>% filter(longest == 15) %>% pull(p),
+  #          linewidth = 0.7, curvature = -0.2, color = "#CF2E2E",
+  #          arrow = arrow(length = unit(3, units = "mm"))) +
+  scale_x_continuous(limits = c(0, 19),
+                     breaks = scales::pretty_breaks(5),
+                     minor_breaks = FALSE) +
+  scale_y_continuous(limits = c(0, 0.18),
+                     breaks = scales::pretty_breaks(5),
+                     labels = scales::percent) +
+  scale_color_manual(guide = "none") +
+  labs(title = "Matchplay skill simulation is similar to <span style='color:#b3b3b3;'>uniform skill</span>",
+       x = "Longest streak",
+       y = "Probability") +
+  theme(plot.title = element_markdown())
+
+p_sim_skill
+```
+
+It's...similar enough to uniform. Longer streaks are slightly more likely, the opposite of what I expected. Maybe lower seeds were under-seeded relative to their Matchplay rankings.
+
+Jason's 15 win streak is still somewhat surprising, but not eye-popping. Under this model, about 15% of the time someone was going to have a streak at least that long in this ladder format.
+
+# Simulated tournament
+
+We're basically simulating the whole tournament, so let's look at individual player results to see if it's doing something reasonable. Bars here are 5% quantiles of rank from the simulation and dots are the observed ranks. 
+
+```{r}
+sim_glicko_raw %>%
+  left_join(x = .,
+            y = pc_final %>%
+              select(seed, player, true_rank = rank),
+            by = "seed") %>%
+  ggplot(aes(x = rank, y = seed)) +
+  tidybayes::stat_interval(aes(x = rank),
+                           orientation = "horizontal",
+                           .width = seq(0, 1, by = 0.05)) +
+  geom_point(data = pc_final,
+             aes(x = rank, y = seed),
+             size = 2, color = "#000000") +
+  scale_x_reverse(limits = c(20, 1),
+                  breaks = 20:1,
+                  minor_breaks = NULL) +
+  scale_y_reverse(limits = c(20, 1),
+                  breaks = 20:1,
+                  labels = pc_final %>% 
+                    arrange(seed) %>% 
+                    mutate(label = glue::glue("{player} ({seed})")) %>%
+                    pull(label) %>%
+                    rev(),
+                  minor_breaks = NULL) +
+  scale_color_discrete(guide = "none",
+                       palette = scales::pal_seq_gradient(low = "#FFFFFF00", high = "#CF2E2EFF")(seq(0, 1, length = 22))[-1]) +
+  labs(x = "Final Rank",
+       y = "Player (Seed)")
+```
+
+I don't have much to say about this besides that looking at the marginals for each seed could be misleading cause long streaks necessarily mean other players have shorter ones. We could look at 'rounds played' instead and at least they'd all start at the same point but I think that would mostly just left-align this graph. 
+
+```{r}
+#| eval: false
+
+sim_glicko_raw %>%
+  left_join(x = .,
+            y = pc_final %>%
+              select(seed, player, true_rank = rank),
+            by = "seed") %>%
+  group_by(true_rank, seed) %>%
+  summarize(med_rank  = median(rank),
+            q_outcome = sum(true_rank <= rank)/n()) %>%
+  ggplot(aes(x = med_rank, y = seed, color = q_outcome)) +
+  # no change
+  geom_point(data = . %>% filter(true_rank == med_rank),
+             size = 3) +
+  # change
+  geom_segment(data = . %>% filter(true_rank != med_rank),
+               aes(xend = true_rank, yend = seed),
+               linewidth = 2, arrow = arrow(angle = 20, length = unit(8, "pt"), type = "open")) + 
+  geom_text(data = . %>% filter(med_rank - true_rank > 0),
+            aes(x = true_rank, label = paste0("+", med_rank - true_rank)),
+            size = 4, hjust = 0, nudge_x = 0.2) +
+  scale_x_reverse(limits = c(20, 0),
+                  breaks = 20:1,
+                  minor_breaks = NULL) +
+  scale_y_reverse(limits = c(20, 1),
+                  breaks = 20:1,
+                  labels = \(x){paste0(pc_final$player[x],
+                                       " (", pc_final$seed[x], ")")}) +
+  scale_color_gradient2(guide = "none",
+                        low = "#CF2E2E", mid = "white", high = "#68B631",  
+                        limits = c(0, 1), midpoint = 0.5) +
+  labs(x = "Final Rank",
+       y = "Player (Seed)")
+```
+
+Perhaps more interestingly, here's the simulated probability of winning the entire tournament for each player. The red line is the 'uniform skill' win probability (which comes from the tournament structure, since the player with seed $i$ has to play $i$ 4-player games, one 3-player game, and one 2-player game to win it all).
+
+```{r}
+sim_glicko_raw %>% 
+  filter(rank == 1) %>% 
+  count(seed) %>% 
+  mutate(p = n/sum(n)) %>%
+  ggplot(aes(x = p, y = seed)) +
+  geom_line(data = tibble(seed = 20:1) %>% mutate(p = exp(-seed * log(4/3) - log(3/2) - log(2))),
+            aes(x = p, y = seed),
+            linewidth = 1.5, color = "#CF2E2E") +
+  geom_point(size = 2, color = "#000000") +
+  scale_x_continuous(limits = c(0, 0.26),
+                     breaks = scales::pretty_breaks(5),
+                     labels = scales::percent) +
+  scale_y_reverse(limits = c(20, 1),
+                  breaks = 20:1,
+                  labels = pc_final %>% 
+                    arrange(seed) %>% 
+                    mutate(label = glue::glue("{player} ({seed})")) %>%
+                    pull(label) %>%
+                    rev(),
+                  minor_breaks = NULL) +
+  labs(x = "Probability of winning the tournament",
+       y = "Player (Seed)")
+```
+
+The differences from that line are differences from equal Elo, magnified by the rank. Steve Bowden is a great player, but he's far below the line here because his win probability is far from zero and most of the time he'd have to beat Escher (who has 4 career major championships), Ray (3 majors), or Keith (11 majors) to win the tournament.
+
+::: {.column-margin}
+Note that Elo *isn't* skill, kind of like how IQ isn't intelligence. It's a model parameter constructed to hopefully be high when our operational definition of skill (beating players especially those who tend to beat other players) is also high.
+:::
+
+This does make me want to learn more about IFPA's ranking system, how it handles multiplayer matches, and what fundamentally multiplayer ELO models are like.
+
+The other thing I'd like to think about more is the effect of being 'cold', since some players were sitting around for a while before getting in. They may have been warming up on other games, and there are probably better sources of data for this (like tournaments with lots of byes).
+
+# References
+
+::: {#refs}
+:::
+

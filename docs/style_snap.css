@@ -1,0 +1,58 @@
+article {
+  position: relative;
+}
+
+.scroller {
+  height: 650px;
+  overflow-y: scroll;
+  scroll-snap-type: y mandatory;
+  padding-bottom: 0px;
+}
+
+.scroller section {
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+}
+
+.column img {
+  max-height: 650px;
+  max-width: 100%;
+  object-fit: cover;
+}
+
+.column {
+  float: left;
+}
+
+.left {
+  width: 60%;
+}
+
+.right {
+  width: 20%;
+}
+
+.row:after{
+  content: "";
+  display: table;
+  clear: both;
+}
+
+.image-container {
+  position: relative;
+}
+
+.image-container img {
+  height: 650;
+}
+
+.underlay {
+  z-index: 0;
+}
+
+.overlay {
+  z-index: 10;
+  position: absolute;
+  top: 0;
+  left: 0;
+}

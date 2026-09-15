@@ -1,0 +1,241 @@
+---
+title: "The Mind"
+description: "Finally, a board game about estimating conditional distributions of order statistics"
+date: "2018-05-29"
+format: 
+  html: 
+    toc: true
+    toc-depth: 2
+    toc-location: "left"
+execute: 
+  echo: false
+---
+
+```{r}
+#| include: false
+
+library(tidyverse)
+library(here)
+
+here::i_am("posts/the_mind.qmd")
+```
+
+# The Mind
+
+The Mind is a co-operative card game where players attempt to lay down cards from their hidden hands in ascending order using no communication except the psychic link between them. Turns out we use this psychic link all the time, inferring information from pauses, facial expressions, and body language.
+
+I'll leave the game criticism to folks like [Dan Thurot](https://spacebiff.com/tag/the-mind/), but I'll say, when I read the rules and first sat down for a match, I thought the supernatural part would feel like either a self-aware wink or an inside joke I wasn't quite in on, but there's an explicit action that stops the game so players can 'refocus concentration'. Whenever we started to wander out of the magic circle, we'd call time, put a palm on the table, and re-connect to that shared energy. You have to relax into it or look at it askanse.
+
+## Probability
+
+The cold part of the calculation is estimating the probability that your card is the $k^{th}$ order statistic of the unknown population of initial cards, conditional on what we've observed so far.
+
+Let $X_1,...,X_n \in \{1,...,100\}$ be a sample drawn *without replacement* from that discrete uniform distribution. Out of $N$ total cards we've observed $(k - 1) + N_h$ of these, one for each previous card played and one for each card remaining in our hand. We also know the values of the previous order statistics and the cards in our hand (but since they're ordered, we only care about the last one $X_{(k-1)} = l$ and the lowest value in our hand $X_h = x$.
+
+We can find the probability we *shouldn't* play next by counting the number of cards that beat our lowest and the total number of cards.
+
+Beat us: $X_h - X_{(i-1)} - 1$
+
+Don't beat us: $100 - (X_h - X_{(i-1)} - 1)$
+
+Total unknown: $N - (k - 1) - N_h$
+
+$$
+p = \frac{\binom{\text{beat}}{\text{unknown}}}{\binom{\text{beat + don't}}{\text{unknown}}}
+$$
+
+```{r}
+p_play <- function(n_beat, n_dont_beat, n_unk) {
+  # when you have no cards left, make n_dont_beat NA
+  if (is.na(n_beat) | is.infinite(n_beat) | is.na(n_dont_beat) | is.infinite(n_dont_beat)) {
+    return(0)
+  } else if (n_unk == 0) {
+    return(1)
+  } else {
+    return(
+      `/`((seq(n_dont_beat, max(1, n_dont_beat - n_unk + 1)) %>% log() %>% sum() %>% exp()),
+          (seq(n_dont_beat + n_beat, max(1, n_dont_beat + n_beat - n_unk + 1)) %>% log() %>% sum() %>% exp()))
+    )
+  }
+}
+```
+
+Here are a few example games with an oracle view of when they're actually the right player (darker).
+
+```{r}
+play_game <- function(n_player, hand_size) {
+  stopifnot(n_player * hand_size <= 100)
+  
+  game <- 
+    tibble(
+      cards  = c(0, sample(1:100, n_player * hand_size, replace = FALSE)),
+      player = c(0, sample(rep(1:n_player, each = hand_size), replace = FALSE))
+    ) %>%
+    arrange(cards)
+  
+  game <- 
+    game %>%
+    mutate(
+      my_min = ifelse(player == 1, cards, NA),
+      my_total = sum(player == 1)
+    ) %>%
+    fill(my_min, .direction = "up", ) %>%
+    mutate(
+      my_min = my_min %>% lead(n = 1, default = NA),
+      # cards below your minimum (that aren't yours, implied)
+      n_beat = pmax(0, my_min - cards - 1),
+      # cards above your minimum that aren't yours
+      n_dont = 100 - cards - my_total - cumsum(player == 1) + 1,
+      # cards above current that aren't yours
+      n_unk  = n() - row_number()) %>% 
+    rowwise() %>%
+    mutate(p = p_play(n_beat, n_dont, n_unk)) %>%
+    ungroup() %>%
+    mutate(p = lag(p, n = 1)) %>% 
+    `[`(-1, )
+  
+  # TODO: doesn't handle the first round correctly, need a zero start
+  
+  p <- 
+    game %>%
+    mutate(cards = cards %>% factor(cards)) %>%
+    ggplot(aes(x = cards, y = p, alpha = (player == 1))) +
+    geom_col() +
+    scale_y_continuous(limits = c(0, 1),
+                       breaks = scales::pretty_breaks(5),
+                       labels = scales::percent) +
+    scale_alpha_manual(guide = "none",
+                       values = c("TRUE" = 1, "FALSE" = 0.5)) +
+    theme_minimal()
+  
+  plot(p)
+  
+  return(game)
+}
+```
+
+::: panel-tabset
+### 4 players, 5 cards
+
+```{r}
+set.seed(0451)
+invisible(play_game(n_player = 4, hand_size = 5))
+```
+
+### 3 players, 2 cards
+
+```{r}
+invisible(play_game(n_player = 3, hand_size = 2))
+```
+
+### 4 players, 7 cards
+
+```{r}
+invisible(play_game(n_player = 4, hand_size = 7))
+```
+:::
+
+## What do I do with that info?
+
+So, there's an expression for the probability you should play a card, neat! But does it help us...play the game?
+
+Not really.
+
+We can't really set a minimum play threshold, cause it grinds itself to a halt pretty fast if nobody meets it, and if you progressively lower that threshold over time you're just...playing the game as intended.
+
+Maybe we can say something about how much information players get from sources besides this cold calculation.
+
+```{r}
+#| eval: false
+
+set.seed(0451)
+
+n_player  <- 4
+hand_size <- 5
+n_sim <- 1e5
+
+out <- tibble(
+  index   = rep(NA, n_sim),
+  prob_p1 = rep(NA, n_sim),
+  is_p1   = rep(NA, n_sim),
+  prob_pt = rep(NA, n_sim)
+)
+
+for (i in 1:nrow(out)) {
+  # 1) sample initial state
+  # random order of cards and players
+  cards  <- c(0, sample(1:100, n_player * hand_size, replace = FALSE))
+  player <- c(0, sample(rep(1:n_player, each = hand_size), replace = FALSE))[order(cards)]
+  cards  <- cards[order(cards)]
+  
+  # 2) sample play in the game
+  # random integer 1 to n_cards
+  index <- sample(2:(length(cards) - 1), 1)
+  out$index[i] <- index
+  
+  # 3) calculate play prob for a player and whether it's their play
+  out$prob_p1[i] <- 
+    p_play(n_beat      = min(cards[cards > cards[index - 1] & player == 1]) - cards[index - 1] - 1,
+           n_dont_beat = 100 - min(cards[cards > cards[index - 1] & player == 1]) - length(cards[cards > cards[index - 1] & player == 1]) + 1,
+           n_unk       = length(cards[1:length(cards) > (index - 1) & player != 1]))
+  
+  out$is_p1[i] <- player[index] == 1
+  
+  # 4) calculate play prob for correct player
+  out$prob_pt[i] <- 
+    p_play(n_beat      = min(cards[cards > cards[index - 1] & player == player[index]]) - cards[index - 1] - 1,
+           n_dont_beat = 100 - min(cards[cards > cards[index - 1] & player == player[index]]) - length(cards[cards > cards[index - 1] & player == player[index]]) + 1,
+           n_unk       = length(cards[cards > cards[index - 1] & player != player[index]]))
+  
+  # progress
+  if (i %% 1000 == 0) {
+    cat(i, "of", n_sim, "\r")
+  }
+}
+
+write_csv(out, here("data/processed/mind_sim.csv"))
+```
+
+```{r}
+out <- read_csv(here("data/processed/mind_sim.csv"), 
+                progress = FALSE, show_col_types = FALSE)
+```
+
+Here's a histogram of the play probabilities for an arbitrary wrong player and the right player.
+
+::: panel-tabset
+### Wrong player
+
+```{r}
+out %>%
+  filter(!is_p1) %>%
+  ggplot(aes(x = prob_p1)) +
+  geom_histogram(aes(y =after_stat(..density..)),
+                 fill = "#5480C7",
+                 binwidth = 0.05) +
+  scale_x_continuous(labels = scales::percent) +
+  scale_y_continuous(guide = "none") +
+  labs(x = NULL,
+       y = NULL) +
+  coord_cartesian(xlim = c(0, 1)) +
+  theme_minimal()
+```
+
+### Right player
+
+```{r}
+out %>%
+  ggplot(aes(x = prob_pt)) +
+  geom_histogram(aes(y =after_stat(..density..)),
+                 fill = "#5480C7",
+                 binwidth = 0.05) +
+  scale_x_continuous(labels = scales::percent) +
+  scale_y_continuous(guide = "none") +
+  labs(x = NULL,
+       y = NULL) +
+  coord_cartesian(xlim = c(0, 1)) +
+  theme_minimal()
+```
+:::
+
+Sometime I'd like to come back to this and think about if there's a way to quantify the amount of information we get from the nonverbal communication by comparing actual performance to what we'd expect from perfect knowledge of the probabilities.

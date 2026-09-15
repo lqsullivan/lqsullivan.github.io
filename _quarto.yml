@@ -1,0 +1,41 @@
+project:
+  type: website
+  output-dir: docs
+
+website:
+  title: "Pinball is Theater"
+  favicon: "pit_logo.png"
+  image: "pit_logo.png"
+  
+  navbar:
+    logo: pit_logo.png
+    left:
+      - text: Posts
+        href: "index.qmd"
+      - text: Art
+        href: "art.qmd"
+      - text: Pinball Feelings
+        href: "pinball_compliment_sandwich.qmd"
+  #   right:
+  #     - text: "About"
+  #       href: about.qmd
+        
+format:
+  html:
+    css: "style_snap.css"
+    fig-align: "center"
+    theme: 
+      - litera
+      - style.css
+      - style.scss
+    mainfont: ""
+    fontsize: "1em"
+    grid:
+      sidebar-width: 300px
+      body-width: 800px
+      margin-width: 300px
+      gutter-width: 1.5rem
+    toc: true
+
+execute: 
+  echo: false

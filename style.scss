@@ -1,0 +1,145 @@
+/*-- scss:defaults --*/
+
+$theme: "cosmo" !default;
+
+//
+// Color system
+//
+
+$white:    #ffffff !default;
+$gray-100: #f8f9fa !default;
+$gray-200: #e9ecef !default;
+$gray-300: #dee2e6 !default;
+$gray-400: #ced4da !default;
+$gray-500: #adb5bd !default;
+$gray-600: #868e96 !default;
+$gray-700: #495057 !default;
+$gray-800: #373a3c !default;
+$gray-900: #212529 !default;
+$black:    #000000 !default;
+
+$blue:    #2780e3 !default;
+$indigo:  #6610f2 !default;
+$purple:  #613d7c !default;
+$pink:    #e83e8c !default;
+$red:     #ff0039 !default;
+$orange:  #f0ad4e !default;
+$yellow:  #ff7518 !default;
+$green:   #3fb618 !default;
+$teal:    #20c997 !default;
+$cyan:    #9954bb !default;
+
+$primary:       #00aca8 !default;
+$secondary:     $black !default;
+$success:       $green !default;
+$info:          $cyan !default;
+$warning:       $yellow !default;
+$danger:        $red !default;
+$light:         $white !default;
+$dark:          $black !default;
+
+$min-contrast-ratio:   2.6 !default;
+
+// Colors
+
+$body-bg: $light;
+$navbar-bg: $primary;
+$navbar-fg: $secondary;
+$navbar-hl: $white;
+
+// Options
+
+$enable-rounded: false !default;
+
+// Body
+
+$body-color:    $gray-800 !default;
+
+// Header
+
+
+// Fonts
+
+// stylelint-disable-next-line value-keyword-case
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400..900&family=Quattrocento+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+$font-family-sans-serif: "Quattrocento Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol" !default;
+$heading-font: "Cinzel", serif;
+
+$headings-font-weight: 400 !default;
+
+// Navbar
+
+$navbar-brand-font-size: 2rem;
+$navbar-dark-hover-color: rgba($white, 1) !default;
+$navbar-light-hover-color: rgba($black, .9) !default;
+
+// Alerts
+
+$alert-border-width: 0 !default;
+
+// Progress bars
+
+$progress-height: .5rem !default;
+
+
+/*-- scss:rules --*/
+
+// Variables
+
+$web-font-path: 'https://fonts.googleapis.com/css2?family=Cinzel:wght@400..900&family=Quattrocento+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap' !default;
+@if $web-font-path {
+  @import url($web-font-path);
+}
+
+// Typography
+
+body {
+  font-family: $font-family-sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+// Indicators
+
+.badge {
+  &.bg-light {
+    color: $dark;
+  }
+}
+
+// Progress bars
+
+.progress {
+  @include box-shadow(none);
+
+  .progress-bar {
+    font-size: 8px;
+    line-height: 8px;
+  }
+}
+
+// Title text
+ 
+.title{
+  font: {
+    family: "Cinzel", serif;
+  };
+}
+
+// Headers
+
+h1, h2, h3 {
+  font-family: $heading-font;
+}
+
+// paragraphs
+
+p {
+  font-family: $font-family-sans-serif;
+}
+
+// figures and captions
+
+figure {
+  figcaption, .caption {
+    text-align: center;
+  }}

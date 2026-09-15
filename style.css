@@ -1,0 +1,9 @@
+/*-- scss:defaults --*/
+
+.navbar-logo {
+  min-height: 100px;
+}
+
+.navbar-light .navbar-toggler-icon {
+    background-image: url("data:pit_logo.png");
+}

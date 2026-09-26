@@ -5,10 +5,10 @@ fig-align: "center"
 
 # Writing
 
-When Inkle games was working on Pendragon, they put out a call for short stories to be campfire tales in the game. Mine didn't get selected, but I'm quite proud of it.
+When Inkle games was working on Pendragon, they put out a call for short stories to be campfire tales in the game. Mine didn't get selected, but I'm quite proud of it. Some of the dialogue is based on character tags that are assigned randomly here, so if you play it a few times you'll see some different options (nothing huge though).
 
 ```{=html}
-<iframe width="780" height="500" src="https://lqsullivan.itch.io/a-spell" title="A Spell"></iframe> 
+<iframe frameborder="0" src="https://itch.io/embed/641796?border_width=2" width="554" height="169"><a href="https://lqsullivan.itch.io/a-spell">A Spell by lqsullivan</a></iframe>
 ```
 
 # Pinball DMD art

@@ -120,7 +120,7 @@ p_nbinom <-
            xend = 15 - 0.3, yend = nbinom_longest %>% filter(longest == 15) %>% pull(p),
            linewidth = 0.7, curvature = -0.2, color = "#CF2E2E",
            arrow = arrow(length = unit(3, units = "mm"))) +
-  scale_x_continuous(limits = c(3, 19),
+  scale_x_continuous(limits = c(0, 19),
                      breaks = scales::pretty_breaks(5),
                      minor_breaks = FALSE) +
   scale_y_continuous(limits = c(0, 0.18),

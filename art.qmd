@@ -8,7 +8,7 @@ fig-align: "center"
 When Inkle games was working on Pendragon, they put out a call for short stories to be campfire tales in the game. Mine didn't get selected, but I'm quite proud of it.
 
 ```{=html}
-<iframe width="780" height="500" src="https://lqsullivan.itch.io/a-spell" title="A Spell"></iframe> 
+<iframe frameborder="0" src="https://itch.io/embed/641796?border_width=2" width="554" height="169"><a href="https://lqsullivan.itch.io/a-spell">A Spell by lqsullivan</a></iframe>
 ```
 
 # Pinball DMD art
